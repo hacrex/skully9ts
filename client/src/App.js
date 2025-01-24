@@ -1,44 +1,51 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme from './theme';
+import { ThemeProvider as CustomThemeProvider } from './theme/ThemeContext';
 
 // Layout Components
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Toast from './components/Toast';
+import CartDrawer from './components/CartDrawer';
+import SearchOverlay from './components/SearchOverlay';
+import ScrollToTop from './components/ScrollToTop';
 
 // Page Components
 import Home from './pages/Home';
-import Shop from './pages/Shop';
-import ProductDetails from './pages/ProductDetails';
+import Landing from './pages/Landing';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Blog from './pages/Blog';
-import Contact from './pages/Contact';
+import BlogPost from './pages/BlogPost';
+import Profile from './pages/Profile';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <CustomThemeProvider>
       <CssBaseline />
       <Router>
+        <ScrollToTop />
         <div className="App">
-          <Navbar />
+          <Header />
+          <CartDrawer />
+          <SearchOverlay />
+          <Toast />
           <main>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/blog" element={<Blog />} />
-              <Route path="/contact" element={<Contact />} />
+              <Route path="/blog/:id" element={<BlogPost />} />
+              <Route path="/profile/*" element={<Profile />} />
             </Routes>
           </main>
           <Footer />
         </div>
       </Router>
-    </ThemeProvider>
+    </CustomThemeProvider>
   );
 }
 
