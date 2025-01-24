@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Skull Loader</title>
+    <g id="Skull-Loader" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M50,5 C70.9868205,5 88,22.0131795 88,43 C88,56.9112319 79.3781289,68.9112319 67.0625,74.5 L63,95 L37,95 L32.9375,74.5 C20.6218711,68.9112319 12,56.9112319 12,43 C12,22.0131795 29.0131795,5 50,5 Z" id="Skull" stroke="#FF0000" stroke-width="2"></path>
+        <path d="M35,55 C35,60.5228475 31.6421356,65 27.5,65 C23.3578644,65 20,60.5228475 20,55 C20,49.4771525 23.3578644,45 27.5,45 C31.6421356,45 35,49.4771525 35,55 Z" id="Left-Eye" fill="#FF0000"></path>
+        <path d="M80,55 C80,60.5228475 76.6421356,65 72.5,65 C68.3578644,65 65,60.5228475 65,55 C65,49.4771525 68.3578644,45 72.5,45 C76.6421356,45 80,49.4771525 80,55 Z" id="Right-Eye" fill="#FF0000"></path>
+        <path d="M50,70 L50,70 C55.5228475,70 60,74.4771525 60,80 L60,95 L40,95 L40,80 C40,74.4771525 44.4771525,70 50,70 Z" id="Jaw" stroke="#FF0000" stroke-width="2"></path>
+        <path d="M42,80 L58,80" id="Teeth-Top" stroke="#FF0000" stroke-width="2"></path>
+        <path d="M42,85 L58,85" id="Teeth-Bottom" stroke="#FF0000" stroke-width="2"></path>
+    </g>
+</svg>
