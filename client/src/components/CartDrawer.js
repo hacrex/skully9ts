@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import CartItem from './CartItem';
+import CartItem from '../cart/CartItem';
 import { toggleCart } from '../store/slices/uiSlice';
 import { formatPrice } from '../utils/format';
 
