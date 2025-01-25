@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer';
 // Components will be imported here
 import FeaturedProducts from '../components/products/FeaturedProducts';
 import CollectionShowcase from '../components/home/CollectionShowcase';
-import Newsletter from '../components/common/Newsletter';
+import Newsletter from '../components/Newsletter';
 
 const Home = () => {
   const [heroRef, heroInView] = useInView({

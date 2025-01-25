@@ -1,23 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  isCartOpen: false,
-  isSearchOpen: false,
-  toast: {
-    open: false,
-    message: '',
-    type: 'info', // 'success', 'error', 'warning', 'info'
-  },
-  loading: {
-    global: false,
-    products: false,
-    checkout: false,
-  },
-  modal: {
-    open: false,
-    type: null, // 'quickView', 'login', 'signup', 'confirm'
-    data: null,
-  },
+  cartOpen: false,
+  searchOpen: false,
+  notification: null,
+  theme: 'light',
 };
 
 const uiSlice = createSlice({
@@ -25,56 +12,22 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     toggleCart: (state) => {
-      state.isCartOpen = !state.isCartOpen;
-      if (state.isCartOpen) {
-        state.isSearchOpen = false;
-      }
+      state.cartOpen = !state.cartOpen;
     },
     toggleSearch: (state) => {
-      state.isSearchOpen = !state.isSearchOpen;
-      if (state.isSearchOpen) {
-        state.isCartOpen = false;
-      }
+      state.searchOpen = !state.searchOpen;
     },
-    showToast: (state, action) => {
-      state.toast = {
-        open: true,
-        message: action.payload.message,
-        type: action.payload.type || 'info',
-      };
+    setNotification: (state, { payload }) => {
+      state.notification = payload;
     },
-    hideToast: (state) => {
-      state.toast.open = false;
+    clearNotification: (state) => {
+      state.notification = null;
     },
-    setLoading: (state, action) => {
-      const { key, value } = action.payload;
-      state.loading[key] = value;
-    },
-    openModal: (state, action) => {
-      state.modal = {
-        open: true,
-        type: action.payload.type,
-        data: action.payload.data || null,
-      };
-    },
-    closeModal: (state) => {
-      state.modal = {
-        open: false,
-        type: null,
-        data: null,
-      };
+    toggleTheme: (state) => {
+      state.theme = state.theme === 'light' ? 'dark' : 'light';
     },
   },
 });
 
-export const {
-  toggleCart,
-  toggleSearch,
-  showToast,
-  hideToast,
-  setLoading,
-  openModal,
-  closeModal,
-} = uiSlice.actions;
-
+export const { toggleCart, toggleSearch, setNotification, clearNotification, toggleTheme } = uiSlice.actions;
 export default uiSlice.reducer;

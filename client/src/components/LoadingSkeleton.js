@@ -1,62 +1,54 @@
 import React from 'react';
-import { Box, Skeleton, Grid, Card, CardContent } from '@mui/material';
+import PropTypes from 'prop-types';
+import { Grid, Card, CardContent, Skeleton } from '@mui/material';
 
-export const ProductSkeleton = () => (
-  <Card>
-    <Skeleton variant="rectangular" height={200} />
-    <CardContent>
-      <Skeleton width="60%" />
-      <Skeleton width="40%" />
-      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 1 }}>
-        <Skeleton width={100} />
-        <Skeleton width={30} sx={{ ml: 1 }} />
-      </Box>
-      <Skeleton width="80%" />
-      <Skeleton width="100%" height={36} sx={{ mt: 2 }} />
-    </CardContent>
-  </Card>
-);
+// ... existing skeleton components ...
 
-export const CategorySkeleton = () => (
-  <Card>
-    <Skeleton variant="rectangular" height={200} />
-    <CardContent>
-      <Skeleton width="40%" sx={{ mx: 'auto' }} />
-      <Skeleton width="60%" sx={{ mx: 'auto' }} />
-    </CardContent>
-  </Card>
-);
+const LoadingSkeleton = ({ count = 6 }) => {
+  return (
+    <Grid container spacing={3}>
+      {[...Array(count)].map((_, index) => (
+        <Grid item xs={12} sm={6} md={4} key={index}>
+          <Card>
+            <Skeleton
+              variant="rectangular"
+              height={200}
+              animation="wave"
+              sx={{ bgcolor: 'grey.100' }}
+            />
+            <CardContent>
+              <Skeleton
+                variant="text"
+                height={32}
+                width="70%"
+                animation="wave"
+                sx={{ bgcolor: 'grey.100' }}
+              />
+              <Skeleton
+                variant="text"
+                height={24}
+                width="40%"
+                animation="wave"
+                sx={{ bgcolor: 'grey.100' }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
 
-export const HeroSkeleton = () => (
-  <Box sx={{ width: '100%', height: { xs: '80vh', md: '90vh' } }}>
-    <Skeleton variant="rectangular" width="100%" height="100%" />
-  </Box>
-);
+LoadingSkeleton.propTypes = {
+  count: PropTypes.number
+};
 
-export const ProductGridSkeleton = ({ count = 8 }) => (
-  <Grid container spacing={4}>
-    {Array(count).fill(null).map((_, index) => (
-      <Grid item xs={12} sm={6} md={3} key={index}>
-        <ProductSkeleton />
-      </Grid>
-    ))}
-  </Grid>
-);
-
-export const CategoryGridSkeleton = ({ count = 4 }) => (
-  <Grid container spacing={4}>
-    {Array(count).fill(null).map((_, index) => (
-      <Grid item xs={12} sm={6} md={3} key={index}>
-        <CategorySkeleton />
-      </Grid>
-    ))}
-  </Grid>
-);
-
-export default {
+// Export individual components
+export {
   ProductSkeleton,
   CategorySkeleton,
-  HeroSkeleton,
+  BannerSkeleton,
   ProductGridSkeleton,
-  CategoryGridSkeleton
+  CategoryGridSkeleton,
+  LoadingSkeleton
 };

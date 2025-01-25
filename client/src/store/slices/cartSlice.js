@@ -2,9 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   items: [],
-  total: 0,
-  quantity: 0,
-  isLoading: false,
+  loading: false,
   error: null,
 };
 
@@ -12,44 +10,25 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart: (state, action) => {
-      const newItem = action.payload;
-      const existingItem = state.items.find(item => item.id === newItem.id);
-      
+    addToCart: (state, { payload }) => {
+      const existingItem = state.items.find(item => item.id === payload.id);
       if (existingItem) {
-        existingItem.quantity += newItem.quantity;
+        existingItem.quantity += 1;
       } else {
-        state.items.push(newItem);
-      }
-      
-      state.quantity += newItem.quantity;
-      state.total += newItem.price * newItem.quantity;
-    },
-    removeFromCart: (state, action) => {
-      const id = action.payload;
-      const existingItem = state.items.find(item => item.id === id);
-      
-      if (existingItem) {
-        state.quantity -= existingItem.quantity;
-        state.total -= existingItem.price * existingItem.quantity;
-        state.items = state.items.filter(item => item.id !== id);
+        state.items.push({ ...payload, quantity: 1 });
       }
     },
-    updateQuantity: (state, action) => {
-      const { id, quantity } = action.payload;
-      const item = state.items.find(item => item.id === id);
-      
+    removeFromCart: (state, { payload }) => {
+      state.items = state.items.filter(item => item.id !== payload);
+    },
+    updateQuantity: (state, { payload }) => {
+      const item = state.items.find(item => item.id === payload.id);
       if (item) {
-        const quantityDiff = quantity - item.quantity;
-        item.quantity = quantity;
-        state.quantity += quantityDiff;
-        state.total += item.price * quantityDiff;
+        item.quantity = payload.quantity;
       }
     },
     clearCart: (state) => {
       state.items = [];
-      state.total = 0;
-      state.quantity = 0;
     },
   },
 });
