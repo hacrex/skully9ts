@@ -1,6 +1,6 @@
-# Skully9Ts - Skull-Themed Apparel Dropshipping Website
+# Skully9Ts - Skull-Themed Apparel Store
 
-A modern e-commerce platform specializing in skull-themed t-shirts, hoodies, and accessories.
+A modern e-commerce platform specializing in skull-themed t-shirts, hoodies, jeans, and accessories.
 
 ## Features
 
