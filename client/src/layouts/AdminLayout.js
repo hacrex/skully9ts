@@ -1,3 +1,18 @@
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import { Box, Container } from '@mui/material';
+
+const AdminLayout = () => {
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Outlet />
+      </Container>
+    </Box>
+  );
+};
+
+export default AdminLayout;
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
