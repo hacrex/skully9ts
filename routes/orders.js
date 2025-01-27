@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Order = require('../models/Order');
 const auth = require('../middleware/auth');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { createDropshipOrder } = require('../services/dropshipping');
+const realtimeService = require('../realtimeService'); // Update to use realtimeService
 
 // @route   POST api/orders
 // @desc    Create a new order
@@ -24,7 +23,7 @@ router.post('/', auth, async (req, res) => {
       return res.status(400).json({ message: 'Payment not successful' });
     }
 
-    const order = new Order({
+    const orderData = {
       user: req.user.userId,
       items,
       shippingAddress,
@@ -35,27 +34,11 @@ router.post('/', auth, async (req, res) => {
         status: 'completed'
       },
       subtotal: paymentIntent.amount / 100,
-      shippingCost: 0, // Calculate based on shipping method
-      tax: 0, // Calculate based on location
       total: paymentIntent.amount / 100
-    });
-
-    await order.save();
-
-    // Create dropshipping order
-    const dropshipResponse = await createDropshipOrder(order);
-    
-    // Update order with tracking info
-    order.tracking = {
-      number: dropshipResponse.trackingNumber,
-      carrier: dropshipResponse.carrier,
-      url: dropshipResponse.trackingUrl
     };
-    order.status = 'processing';
-    
-    await order.save();
 
-    res.status(201).json(order);
+    const orderId = await realtimeService.addOrderRealtime(orderData); // Use Realtime DB
+    res.status(201).json({ id: orderId });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -66,12 +49,11 @@ router.post('/', auth, async (req, res) => {
 // @access  Private
 router.get('/', auth, async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user.userId })
-      .populate('items.product')
-      .sort({ createdAt: -1 });
+    const orders = await realtimeService.getOrdersRealtime(req.user.userId); // Use Realtime DB
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching orders:', err);
+    res.status(500).json({ message: 'Server error while fetching orders' });
   }
 });
 
@@ -80,18 +62,14 @@ router.get('/', auth, async (req, res) => {
 // @access  Private
 router.get('/:id', auth, async (req, res) => {
   try {
-    const order = await Order.findOne({
-      _id: req.params.id,
-      user: req.user.userId
-    }).populate('items.product');
-
+    const order = await realtimeService.getOrderRealtime(req.params.id); // Use Realtime DB
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-
     res.json(order);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching order by ID:', err);
+    res.status(500).json({ message: 'Server error while fetching order' });
   }
 });
 

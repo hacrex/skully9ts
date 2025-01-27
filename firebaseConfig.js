@@ -1,6 +1,6 @@
 'use strict';
 
-const firebase = require('firebase/app');
+const { initializeApp, getApp, getApps } = require('firebase/app');
 const { getFirestore } = require('firebase/firestore');
 
 // Your web app's Firebase configuration
@@ -16,7 +16,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = getFirestore(app);
+if (!getApps().length) {
+  initializeApp(firebaseConfig);
+}
+
+const db = getFirestore(getApp());
 
 module.exports = db;
