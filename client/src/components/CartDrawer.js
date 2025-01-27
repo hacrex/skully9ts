@@ -14,9 +14,9 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import CartItem from '../cart/CartItem';
+import CartItem from './cart/CartItem';
 import { toggleCart } from '../store/slices/uiSlice';
-import { formatPrice } from '../utils/format';
+import { formatPrice } from '../utils/formatters';
 
 const CartDrawer = () => {
   const dispatch = useDispatch();

@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { formatDate } from '../../utils/formatters';
+import { formatDate } from '../utils/formatters';
 
 const BlogCard = ({ post, onLike, onShare }) => {
   const navigate = useNavigate();

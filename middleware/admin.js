@@ -1,4 +1,4 @@
-const firestoreService = require('../firestoreService');
+const firestoreService = require('../realtimeService');
 
 module.exports = async (req, res, next) => {
   try {

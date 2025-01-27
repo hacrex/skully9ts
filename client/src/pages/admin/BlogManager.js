@@ -40,6 +40,7 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { formatDate } from '../../utils/formatters';
 
 const validationSchema = Yup.object({
@@ -444,7 +445,7 @@ const BlogManager = () => {
 
                 {previewMode ? (
                   <Paper sx={{ p: 2 }}>
-                    <ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {formik.values.content}
                     </ReactMarkdown>
                   </Paper>

@@ -11,7 +11,7 @@ import {
   Card,
   CardMedia
 } from '@mui/material';
-import { formatCurrency } from '../../utils/formatters';
+import { format } from '../utils/formatters';
 
 const OrderReview = ({ cart, shippingData, paymentData, onPlaceOrder }) => {
   const { items, subtotal, tax, shipping, total } = cart;
@@ -57,7 +57,7 @@ const OrderReview = ({ cart, shippingData, paymentData, onPlaceOrder }) => {
               
               <Grid item xs={3} sm={2}>
                 <Typography variant="body2" align="right">
-                  {formatCurrency(item.price * item.quantity)}
+                  {format(item.price * item.quantity)}
                 </Typography>
               </Grid>
             </Grid>
@@ -69,28 +69,28 @@ const OrderReview = ({ cart, shippingData, paymentData, onPlaceOrder }) => {
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Subtotal" />
           <Typography variant="body1">
-            {formatCurrency(subtotal)}
+            {format(subtotal)}
           </Typography>
         </ListItem>
         
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Shipping" />
           <Typography variant="body1">
-            {shipping === 0 ? 'FREE' : formatCurrency(shipping)}
+            {shipping === 0 ? 'FREE' : format(shipping)}
           </Typography>
         </ListItem>
         
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Tax" />
           <Typography variant="body1">
-            {formatCurrency(tax)}
+            {format(tax)}
           </Typography>
         </ListItem>
         
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
           <Typography variant="h6" color="primary">
-            {formatCurrency(total)}
+            {format(total)}
           </Typography>
         </ListItem>
       </List>

@@ -16,7 +16,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency } from '../utils/formatters';
 
 const OrderConfirmation = ({ order }) => {
   const navigate = useNavigate();
