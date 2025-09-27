@@ -86,6 +86,12 @@ describe('UserService', () => {
     });
 
     it('should create a user successfully with valid data', async () => {
+      // Mock getUserByEmail to return null (no existing user) for this specific test
+      const getUserByEmailSpy = jest.spyOn(userService, 'getUserByEmail').mockResolvedValue({
+        success: true,
+        data: null
+      });
+
       const result = await userService.createUser(validUserData);
 
       expect(result.success).toBe(true);
@@ -96,6 +102,8 @@ describe('UserService', () => {
       expect(result.data.isActive).toBe(true);
       expect(result.data.password).toBeUndefined(); // Password should not be in response
       expect(bcrypt.hash).toHaveBeenCalledWith(validUserData.password, 10);
+      
+      getUserByEmailSpy.mockRestore();
     });
 
     it('should return error for missing required fields', async () => {
@@ -120,9 +128,9 @@ describe('UserService', () => {
 
     it('should return error if user already exists', async () => {
       // Mock existing user
-      get.mockResolvedValue({ 
-        exists: () => true,
-        val: () => ({ email: validUserData.email })
+      jest.spyOn(userService, 'getUserByEmail').mockResolvedValue({
+        success: true,
+        data: { email: validUserData.email }
       });
 
       const result = await userService.createUser(validUserData);
@@ -133,19 +141,35 @@ describe('UserService', () => {
     });
 
     it('should set default role to "user" if not provided', async () => {
+      // Mock getUserByEmail to return null (no existing user) for this specific test
+      const getUserByEmailSpy = jest.spyOn(userService, 'getUserByEmail').mockResolvedValue({
+        success: true,
+        data: null
+      });
+
       const result = await userService.createUser(validUserData);
 
       expect(result.success).toBe(true);
       expect(result.data.role).toBe('user');
+      
+      getUserByEmailSpy.mockRestore();
     });
 
     it('should accept custom role when provided', async () => {
       const adminUserData = { ...validUserData, role: 'admin' };
       
+      // Mock getUserByEmail to return null (no existing user) for this specific test
+      const getUserByEmailSpy = jest.spyOn(userService, 'getUserByEmail').mockResolvedValue({
+        success: true,
+        data: null
+      });
+      
       const result = await userService.createUser(adminUserData);
 
       expect(result.success).toBe(true);
       expect(result.data.role).toBe('admin');
+      
+      getUserByEmailSpy.mockRestore();
     });
   });
 

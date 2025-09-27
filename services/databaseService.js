@@ -194,9 +194,10 @@ class DatabaseService {
    * @param {Error} error - Original error
    * @param {string} operation - Operation that failed
    * @param {Object} context - Additional context
+   * @param {Object} req - Express request object (optional)
    * @returns {Object} Formatted error response
    */
-  handleError(error, operation, context = {}) {
+  handleError(error, operation, context = {}, req = null) {
     const errorResponse = {
       success: false,
       data: null,
@@ -205,7 +206,8 @@ class DatabaseService {
         message: error.message || 'An unknown database error occurred',
         operation,
         timestamp: new Date().toISOString(),
-        context
+        context,
+        requestId: req?.requestId || null
       }
     };
 
@@ -215,7 +217,7 @@ class DatabaseService {
       code: error.code,
       context,
       stack: error.stack
-    });
+    }, req);
 
     return errorResponse;
   }
@@ -224,15 +226,17 @@ class DatabaseService {
    * Create standardized success response
    * @param {any} data - Response data
    * @param {string} operation - Operation that succeeded
+   * @param {Object} req - Express request object (optional)
    * @returns {Object} Formatted success response
    */
-  createSuccessResponse(data, operation) {
+  createSuccessResponse(data, operation, req = null) {
     return {
       success: true,
       data,
       error: null,
       operation,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      requestId: req?.requestId || null
     };
   }
 
@@ -241,29 +245,29 @@ class DatabaseService {
    * @param {string} level - Log level (info, warn, error, debug)
    * @param {string} message - Log message
    * @param {Object} metadata - Additional metadata
+   * @param {Object} req - Express request object (optional)
    */
-  log(level, message, metadata = {}) {
-    const logEntry = {
-      timestamp: new Date().toISOString(),
-      level: level.toUpperCase(),
+  log(level, message, metadata = {}, req = null) {
+    const logger = require('../utils/logger');
+    
+    const logMetadata = {
       service: 'DatabaseService',
-      message,
       ...metadata
     };
 
-    // Use appropriate console method based on level
+    // Use centralized logger
     switch (level.toLowerCase()) {
       case 'error':
-        console.error(JSON.stringify(logEntry));
+        logger.error(message, logMetadata, req);
         break;
       case 'warn':
-        console.warn(JSON.stringify(logEntry));
+        logger.warn(message, logMetadata, req);
         break;
       case 'debug':
-        console.debug(JSON.stringify(logEntry));
+        logger.debug(message, logMetadata, req);
         break;
       default:
-        console.log(JSON.stringify(logEntry));
+        logger.info(message, logMetadata, req);
     }
   }
 

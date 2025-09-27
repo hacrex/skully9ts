@@ -44,7 +44,7 @@ class UserService {
 
       // Check if user already exists
       const existingUser = await this.getUserByEmail(email);
-      if (existingUser) {
+      if (existingUser.success && existingUser.data) {
         throw databaseService.createError('DUPLICATE_ERROR', 'User with this email already exists');
       }
 
