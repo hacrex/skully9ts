@@ -1,9 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const orderService = require('../services/orderService');
 const logger = require('../utils/logger');
+
+// Initialize Stripe - use lazy initialization to avoid issues in test environment
+let stripe;
+const getStripe = () => {
+  if (!stripe) {
+    stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'test-key');
+  }
+  return stripe;
+};
 
 // @route   POST api/orders
 // @desc    Create a new order
@@ -43,7 +51,7 @@ router.post('/', auth, async (req, res) => {
     // Verify payment with Stripe
     let paymentIntent;
     try {
-      paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      paymentIntent = await getStripe().paymentIntents.retrieve(paymentIntentId);
     } catch (stripeError) {
       logger.error('Stripe payment verification failed', {
         error: {
@@ -477,7 +485,7 @@ router.post('/create-payment-intent', auth, async (req, res) => {
     }
 
     try {
-      const paymentIntent = await stripe.paymentIntents.create({
+      const paymentIntent = await getStripe().paymentIntents.create({
         amount: Math.round(amount * 100), // Convert to cents and ensure integer
         currency: currency.toLowerCase(),
         metadata: { 

@@ -1,7 +1,7 @@
 'use strict';
 
-const { initializeApp, getApp, getApps } = require('firebase/app');
-const { getDatabase, ref, get } = require('firebase/database');
+const { ref, get } = require('firebase/database');
+const firebaseConfig = require('../config/firebaseConfig');
 
 /**
  * Unified Database Service for Firebase Realtime Database
@@ -23,27 +23,9 @@ class DatabaseService {
   getDatabase() {
     try {
       if (!this.database) {
-        // Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyD80CUiiEFMa0YRlTZx6E-GbD7NZ-dzgNs",
-          authDomain: "skully9ts.firebaseapp.com",
-          databaseURL: "https://skully9ts-default-rtdb.firebaseio.com",
-          projectId: "skully9ts",
-          storageBucket: "skully9ts.firebasestorage.app",
-          messagingSenderId: "785152782972",
-          appId: "1:785152782972:web:40b6d18feb7785bc750ff9",
-          measurementId: "G-FVKL4993LB"
-        };
-
-        // Initialize Firebase app if not already initialized
-        if (!getApps().length) {
-          initializeApp(firebaseConfig);
-          this.log('info', 'Firebase app initialized successfully');
-        }
-
-        // Get database instance
-        this.database = getDatabase(getApp());
-        this.log('info', 'Firebase Realtime Database instance created');
+        // Get database instance from Firebase configuration
+        this.database = firebaseConfig.getRealtimeDatabase();
+        this.log('info', 'Firebase Realtime Database instance obtained');
       }
 
       return this.database;
@@ -60,20 +42,27 @@ class DatabaseService {
   async validateConnection() {
     try {
       const db = this.getDatabase();
-      const testRef = ref(db, '.info/connected');
-      const snapshot = await get(testRef);
       
-      this.isConnected = snapshot.exists();
+      // Test connection by attempting to read from a simple path
+      // This will succeed if the database is accessible, even if the path doesn't exist
+      const testRef = ref(db, 'test-connection');
+      await get(testRef);
       
-      if (this.isConnected) {
-        this.log('info', 'Database connection validated successfully');
-        this.connectionAttempts = 0;
-      } else {
-        this.log('warn', 'Database connection validation failed - not connected');
-      }
+      this.isConnected = true;
+      this.log('info', 'Database connection validated successfully');
+      this.connectionAttempts = 0;
 
       return this.isConnected;
     } catch (error) {
+      // Check if the error is due to permission denied, which actually means the connection is working
+      // but the database has security rules (which is expected)
+      if (error.message.includes('Permission denied') || error.code === 'PERMISSION_DENIED') {
+        this.isConnected = true;
+        this.log('info', 'Database connection validated successfully (permission denied expected with security rules)');
+        this.connectionAttempts = 0;
+        return this.isConnected;
+      }
+      
       this.isConnected = false;
       this.connectionAttempts++;
       this.log('error', 'Database connection validation failed', { 
@@ -289,12 +278,53 @@ class DatabaseService {
   }
 
   /**
+   * Test Firebase configuration and database connectivity
+   * @returns {Promise<Object>} Configuration test results
+   */
+  async testFirebaseConfiguration() {
+    try {
+      this.log('info', 'Starting Firebase configuration test');
+      
+      // Test Firebase configuration
+      const configTest = await firebaseConfig.testConfiguration();
+      
+      // Test database connectivity
+      const connectivityTest = await this.validateConnection();
+      
+      const testResults = {
+        timestamp: new Date().toISOString(),
+        configuration: configTest,
+        connectivity: {
+          connected: connectivityTest,
+          connectionAttempts: this.connectionAttempts
+        },
+        overall: configTest.configValid && configTest.appInitialized && configTest.databaseConnected && connectivityTest
+      };
+      
+      this.log('info', 'Firebase configuration test completed', testResults);
+      return testResults;
+      
+    } catch (error) {
+      const errorResult = {
+        timestamp: new Date().toISOString(),
+        configuration: { error: error.message },
+        connectivity: { connected: false, error: error.message },
+        overall: false
+      };
+      
+      this.log('error', 'Firebase configuration test failed', errorResult);
+      return errorResult;
+    }
+  }
+
+  /**
    * Reset connection state (useful for testing)
    */
   resetConnection() {
     this.database = null;
     this.isConnected = false;
     this.connectionAttempts = 0;
+    firebaseConfig.reset();
     this.log('info', 'Database connection state reset');
   }
 }

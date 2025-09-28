@@ -11,7 +11,8 @@
     "dev:full": "concurrently \"npm run dev\" \"npm run client\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:firebase": "node scripts/testFirebaseConfig.js"
   },
   "dependencies": {
     "axios": "^1.7.9",
